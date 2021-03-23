@@ -1,0 +1,151 @@
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h5 class="m-0 font-weight-bold text-primary">Tüm Kullanıcılar</h5>
+        <br>
+        <div class="dropdown">
+            <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton"
+                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Dışa Aktar
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <a class="dropdown-item" href="#">
+                    <button type="button" class="btn btn-dark icon-split btn-sm" onclick="tiklama('kopyala');">
+                        <span class="icon text-white-60">
+                            <i class="far fa-clipboard"></i>
+                        </span>
+                        <span class="text">Kopyala</span>
+                    </button>
+                </a>
+                <a class="dropdown-item" href="#">
+                    <button type="button" class="btn btn-success icon-split btn-sm" onclick="tiklama('excel');">
+                        <span class="icon text-white-60">
+                            <i class="far fa-file-excel"></i>
+                        </span>
+                        <span class="text">Excel</span>
+                    </button>
+                </a>
+                <a class="dropdown-item" href="#">
+                    <button type="button" class="btn btn-danger icon-split btn-sm" onclick="tiklama('pdf');">
+                        <span class="icon text-white-60">
+                            <i class="far fa-file-pdf"></i>
+                        </span>
+                        <span class="text">PDF</span>
+                    </button>
+                </a>
+                <a class="dropdown-item" href="#">
+                    <button type="button" class="btn btn-info icon-split btn-sm" onclick="tiklama('csv');">
+                        <span class="icon text-white-60">
+                            <i class="fas fa-file-csv"></i>
+                        </span>
+                        <span class="text">CSV</span>
+                    </button>
+                </a>
+            </div>
+        </div>
+        <div align='center'>
+            <br>
+            <% if (locals.auth_errors !=undefined || locals.auth_success !=undefined || locals.login_error !=undefined)
+                { %>
+                <%- include('./partials/_validateErrorMsg') %>
+                    <% } %>
+        </div>
+
+        <div align='right'>
+            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#exampleModalCenter">
+                + Yeni Kullanıcı Ekle
+            </button>
+        </div>
+
+    </div>
+    <div class="card-body">
+
+        <div class="table-responsive">
+            <table class="table table-bordered users" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>Ad Soyad</th>
+                        <th>Email</th>
+                        <th>Aktif</th>
+                        <th>Kayıt Türü</th>
+                        <th>İşlemler</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+              
+                    <% allUsers.forEach(userone=> {  %>
+                        
+                        <tr>
+                            <td>
+                                <%= userone.ad+' '+userone.soyad %> </td>
+                            <td><%= userone.email  %> </td>
+                            <td><%= userone.aktif  %> </td>
+                            <%if(userone.authFacebook){%>
+                                <td>FaceBook</td>
+                            <%}else if(userone.authGoogle){%>
+                                <td>Google</td>
+                                <%}else{%>
+                                    <td>Mail</td>
+                                    <%}%>
+                            <td align="center">
+                                <a href="/admin/update-user/<%-userone.id%> " class="btn btn-info btn-circle">
+                                    <i class="fas fa-info-circle"></i>
+                                </a>
+                                <a href="/admin/delete-user/<%-userone.id%> " class="btn btn-danger btn-circle">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </td>
+                    </tr>
+                    <% }) %>
+    
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<!-- Button trigger modal -->
+
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">Yeni Kullanıcı Ekle</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <form class="was-validated" action="/admin/add-user" method="POST">
+                <div class="form-group">
+                  <label>Ad</label>
+                  <input type="text" name="ad" class="form-control" placeholder="Ad" required>
+                </div>
+                <div class="form-group">
+                  <label >SoyAd</label>
+                  <input type="text" name="soyad" class="form-control" placeholder="SoyAd" required>
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" name="email" class="form-control" placeholder="Email" required>
+                </div>
+                <div class="form-group">
+                    <label>Şifre</label>
+                    <input type="password" name="pass"  class="form-control" placeholder="Şifre" required>
+                </div>
+                <div class="form-group">
+                    <label>Şifre Tekrar</label>
+                    <input type="password" name="repass" class="form-control" placeholder="Şifre Tekrar" required>
+                </div>
+              
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+          <button type="submit" class="btn btn-success">Kullanıcıyı Kaydet</button>
+        </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  

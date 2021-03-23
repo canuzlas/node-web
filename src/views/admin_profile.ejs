@@ -1,0 +1,40 @@
+<h1>Profil</h1>
+<div class="wrapper bg-white">
+    <% if (locals.auth_errors != undefined || locals.auth_success != undefined || locals.login_error != undefined) { %>
+        <%- include('./partials/_validateErrorMsg') %> 
+     <% } %>
+
+    <form action="/admin/update-profile" method="POST" enctype="multipart/form-data">
+
+
+        <div class="d-flex align-items-start py-3 border-bottom"> <img
+                src="/<%=user.avatar%>"
+                class="img" alt="">
+            <div class="pl-sm-4 pl-2" id="img-section"> <b>Profil Fotoğrafı</b>
+                <p style="font-size: 9px">Yalnız .png .jpg .jpeg yükleyin, en fazla 1mb!</p> <input style="max-width: 200px ; font-size: 10px;"
+                   type="file" name="avatar" class="btn button border">
+            </div>
+        </div>
+        <div class="py-2">
+            <div class="row py-2">
+                <div class="col-md-6"> <label for="firstname">Ad</label> <input type="text" name="ad"
+                        class="bg-light form-control" value="<%- user.ad %> "> </div>
+                <div class="col-md-6 pt-md-0 pt-3"> <label for="lastname">SoyAd</label> <input type="text" name="soyad"
+                        class="bg-light form-control" value="<%- user.soyad %> "> </div>
+            </div>
+            <div class="row py-2">
+                <div class="col-md-12"> <label for="email">Email</label> <input type="text"
+                        class="bg-light form-control" value="<%- user.email %> " disabled> </div>
+            </div>
+            <div class="py-3 pb-4 border-bottom">
+                <button class="btn btn-primary mr-3">Güncelle</button>
+            </div>
+    </form>
+    <div class="d-sm-flex align-items-center pt-3" id="deactivate">
+        <div> <b>Hesabımı sil</b>
+            <p>Hesabın tamamen silinecektir emin misin?</p>
+        </div>
+        <div class="ml-auto"> <a onclick="return confirm('Hesabını Silmek İstediğine Emin Misin?')" href="/admin/delete-me" class="btn danger">Sil</a></div>
+    </div>
+</div>
+</div>

@@ -1,0 +1,17 @@
+<% auth_errors.forEach(error=> { %>
+    <div class="alert alert-danger text-center">
+        <%-error.msg%>
+    </div>
+<% }) %>
+
+<% login_errors.forEach(error=> { %>
+    <div class="alert alert-danger text-center">
+        <%-error%>
+    </div>
+<% }) %>
+
+<% auth_success.forEach(success=> { %>
+    <div class="alert alert-success text-center">
+        <%-success.msg%>
+    </div>
+<% }) %>
