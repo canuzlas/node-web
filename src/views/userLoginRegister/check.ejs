@@ -13,7 +13,7 @@
                                 <h1 class="h4 text-gray-900 mb-4">Hoş Geldin</h1>
                                 <p class="text-center">Mail hesabınıza gelen doğrulama kodunu giriniz.</p>
                                 <% if (locals.auth_errors !=null || locals.auth_success !=null) { %>
-                                    <%- include('partials/_validateErrorMsg.ejs')%>
+                                    <%- include('../partials/_validateErrorMsg.ejs')%>
                                         <% } %>
                             </div>
                             <form class="user" action="/check/check" method="POST">

@@ -8,7 +8,7 @@
                     <div class="text-center">
                         <h1 class="h4 text-gray-900 mb-4">Ücretsiz Bir Hesap Oluştur !</h1>
                         <% if (locals.auth_errors !=null) { %>
-                            <%- include('partials/_validateErrorMsg.ejs')%>
+                            <%- include('../partials/_validateErrorMsg.ejs')%>
                                 <% } %>
                     </div>
                     <form class="user was-validated" method="POST" action="/register-me">

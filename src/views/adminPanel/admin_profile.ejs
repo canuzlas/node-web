@@ -1,10 +1,11 @@
-
+<h1>Profil</h1>
 <div class="wrapper bg-white">
     <% if (locals.auth_errors != undefined || locals.auth_success != undefined || locals.login_error != undefined) { %>
-        <%- include('./partials/_validateErrorMsg') %> 
+        <%- include('../partials/_validateErrorMsg') %> 
      <% } %>
 
-    <form action="/admin/update-profile/<%-user.id%>" method="POST" enctype="multipart/form-data">
+    <form action="/admin/update-profile" method="POST" enctype="multipart/form-data">
+
 
         <div class="d-flex align-items-start py-3 border-bottom"> <img
                 src="/<%=user.avatar%>"
@@ -29,5 +30,11 @@
                 <button class="btn btn-primary mr-3">Güncelle</button>
             </div>
     </form>
+    <div class="d-sm-flex align-items-center pt-3" id="deactivate">
+        <div> <b>Hesabımı sil</b>
+            <p>Hesabın tamamen silinecektir emin misin?</p>
+        </div>
+        <div class="ml-auto"> <a onclick="return confirm('Hesabını Silmek İstediğine Emin Misin?')" href="/admin/delete-me" class="btn danger">Sil</a></div>
+    </div>
 </div>
 </div>

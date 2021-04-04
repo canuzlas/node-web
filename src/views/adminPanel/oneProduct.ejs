@@ -1,0 +1,45 @@
+
+<div class="wrapper bg-white">
+    <% if (locals.auth_errors != undefined || locals.auth_success != undefined || locals.login_error != undefined) { %>
+        <%- include('../partials/_validateErrorMsg') %> 
+     <% } %>
+
+    <form action="/admin/update-product/<%=product.id%>" method="POST" enctype="multipart/form-data">
+
+        <div class="d-flex align-items-start py-3 border-bottom"> <img
+                src="/<%-product.urunFoto%>"
+                class="img" alt="/<%-product.urunFoto%>">
+            <div class="pl-sm-4 pl-2" id="img-section"> <b>Ürün Fotoğrafı</b>
+                <p style="font-size: 9px">Yalnız .png .jpg .jpeg yükleyin</p> <input style="max-width: 200px ; font-size: 10px;"
+                   type="file" name="urunFoto" class="btn button border">
+            </div>
+        </div>
+        <div class="py-2">
+            <div class="row py-2">
+                <div class="col-md-6"> <label for="firstname">Ürün Adı</label> <input type="text" name="urunAd"
+                        class="bg-light form-control" value="<%- product.urunAd %> "> </div>
+                <div class="col-md-6 pt-md-0 pt-3"> <label for="lastname">Ürün Fiyatı</label> <input type="text" name="urunFiyat"
+                        class="bg-light form-control" value="<%=product.urunFiyat %> "> </div>
+            </div>
+            <div class="row py-2">
+                <div class="col-md-12"> <label for="text">Açıklama</label> <input type="text" name="urunAciklama"
+                        class="bg-light form-control" value="<%- product.urunAciklama %> "> </div>
+            </div>
+            <div class="row py-2">
+                <div class="col-md-12"> <label for="text">Ürün Stok</label> <input type="text" name="urunStok"
+                        class="bg-light form-control" value="<%=product.urunStok %> "> </div>
+            </div>
+            <div class="row py-2">
+                <div class="col-md-12"> <label for="text">Ürün Öne Çıkar</label> 
+                <select name="urunOneCikar">
+                        <option <%=product.urunOneCikar==false?"selected":""%>  value="false">hayır</option>
+                        <option <%=product.urunOneCikar==true?"selected":""%> value="true">evet</option>
+                </select>
+                </div>
+            </div>
+            <div class="py-3 pb-4 border-bottom">
+                <button class="btn btn-primary mr-3">Güncelle</button>
+            </div>
+    </form>
+</div>
+</div>

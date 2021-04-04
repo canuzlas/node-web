@@ -15,7 +15,7 @@
                                 <p class="mb-4">Aşağıdaki formdan şifrenizi yenileyin.</p>
 
                                     <% if (locals.auth_errors != undefined || locals.auth_success != undefined || locals.login_error != undefined) { %>
-                                        <%- include('./partials/_validateErrorMsg') %> 
+                                        <%- include('../partials/_validateErrorMsg') %> 
                                      <% } %>
                             </div>
                             <form class="user" action="/new-pass" method="POST">

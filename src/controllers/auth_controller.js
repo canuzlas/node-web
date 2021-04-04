@@ -9,7 +9,7 @@ require('../config/passport_local')(passport)
 
 
 const showLoginPage = (req, res) => {
-    res.render('login', { layout: 'layout/auth_layout.ejs' })
+    res.render('userLoginRegister/login', { layout: 'layout/auth_layout.ejs' })
 }
 const loginCheckPageShow = async (req, res) => {
 
@@ -33,9 +33,6 @@ const loginCheckPageShow = async (req, res) => {
 
             const dogrulamaKodu = Math.floor(Math.random() * 1000000);
             req.session.dogrulamaKodu = dogrulamaKodu;
-
-            axios.get("https://api.iletimerkezi.com/v1/send-sms/get/?username=05051005067&password=120253&text=deneme&receipents=5051005067&sender=APITEST");
-
 
             const transporter = nodemailer.createTransport({
                 service: 'gmail',
@@ -63,7 +60,7 @@ const loginCheckPageShow = async (req, res) => {
                     req.flash('auth_errors', [{ msg: 'Hata oluştu lütfen yetkili birinine danışın.' }]);
                     res.redirect('/login')
                 } else {
-                    res.render('check', { layout: 'layout/auth_layout.ejs' })
+                    res.render('userLoginRegister/check', { layout: 'layout/auth_layout.ejs' })
                     transporter.close()
                 }
             });
@@ -75,10 +72,10 @@ const loginCheckPageShow = async (req, res) => {
 
 }
 const showRegisterPage = (req, res) => {
-    res.render('register', { layout: 'layout/auth_layout.ejs' })
+    res.render('userLoginRegister/register', { layout: 'layout/auth_layout.ejs' })
 }
 const showForgotPage = (req, res) => {
-    res.render('forgot', { layout: 'layout/auth_layout.ejs' })
+    res.render('userLoginRegister/forgot', { layout: 'layout/auth_layout.ejs' })
 }
 const registerMe = async (req, res) => {
     const hatalar = validationResult(req);
@@ -254,7 +251,7 @@ const newPassPageShow = async (req, res) => {
                     req.flash('auth_errors', [{ msg: 'Token hatalı veya Şifrenizi Zaten Değiştirdiniz.' }]);
                     res.redirect('/forgot')
                 } else {
-                    res.render('new-pass', { layout: 'layout/auth_layout.ejs', id: urlid, token: urltoken })
+                    res.render('userLoginRegister/new-pass', { layout: 'layout/auth_layout.ejs', id: urlid, token: urltoken })
                 }
             })
         }

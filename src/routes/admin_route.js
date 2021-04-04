@@ -10,14 +10,19 @@ route.get('/me', adminCheck.adminCheck, adminController.showAdminProfile)
 route.get('/delete-me', adminCheck.adminCheck, adminController.deleteMe)
 route.get('/users', adminCheck.adminCheck, adminController.showUsersPage)
 route.get('/delete-user/:id', adminCheck.adminCheck, adminController.deleteUserById)
+route.get('/delete-product/:id', adminCheck.adminCheck, adminController.deleteProductById)
+route.get('/show-product/:id', adminCheck.adminCheck, adminController.showThisProductPage)
 route.get('/update-user/:id', adminCheck.adminCheck, adminController.showAndUpdateUserPage)
+route.get('/urunler', adminCheck.adminCheck, adminController.showProducts)
 
 
 
 
-route.post('/update-profile/:id?', adminCheck.adminCheck, update.single('avatar') , adminController.updateAdminProfile)
-
+route.post('/update-profile/:id?', adminCheck.adminCheck, update.userMulter.single('avatar') , adminController.updateAdminProfile)
 route.post('/add-user', adminCheck.adminCheck, validationMW.registerValidate(), adminController.addUser)
+
+route.post('/add-product', adminCheck.adminCheck, update.productMulter.single('urunFoto'), adminController.addProduct)
+route.post('/update-product/:id', adminCheck.adminCheck, update.productMulter.single('urunFoto'), adminController.updateProduct)
 
 
 module.exports = route

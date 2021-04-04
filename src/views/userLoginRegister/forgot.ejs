@@ -16,7 +16,7 @@
                                         <h1 class="h4 text-gray-900 mb-2">Şifreni mi unuttun?</h1>
                                         <p class="mb-4">Merak etme, kayıtlı email adresini gir, sana bir link göndereceğiz.</p>
                                         <% if (locals.auth_errors != null || locals.auth_success != null) { %>
-                                            <%- include('partials/_validateErrorMsg.ejs')%> 
+                                            <%- include('../partials/_validateErrorMsg.ejs')%> 
                                         <% } %>
                                     </div>
                                     <form class="user" action="/reset-my-pass" method="POST">
