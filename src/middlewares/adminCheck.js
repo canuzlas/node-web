@@ -1,5 +1,5 @@
 const adminCheck = (req,res,next)=>{
-    if (req.isAuthenticated()) {
+    if (req.session.admin == "true") {
         next()
     } else {
         req.flash('auth_errors',[{msg:'Bu Sayfaya Girmek İçin Yetkiniz Yok'}])

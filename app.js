@@ -14,6 +14,9 @@ const app = express();
 require('dotenv').config();
 require('./src/config/data_base');
 
+
+
+
 const mySessionStore = new mongoStrore({
     url: process.env.DataBase,
     collection: 'sessions'

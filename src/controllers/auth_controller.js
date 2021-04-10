@@ -9,16 +9,17 @@ require('../config/passport_local')(passport)
 
 
 const showLoginPage = (req, res) => {
-    res.render('userLoginRegister/login', { layout: 'layout/auth_layout.ejs' })
+    res.render('userLoginRegister/login', { layout: 'defaultLayout/default_layout.ejs' })
 }
 const loginCheckPageShow = async (req, res) => {
 
     if (req.params.check) {
 
         if (req.body.checkcode == req.session.dogrulamaKodu) {
+            req.session.uye = {isAuth:true,mail:req.session.mail}
             delete req.session.dogrulamaKodu;
             delete req.session.mail;
-            res.redirect('/admin/panel')
+            res.redirect('/')
         } else {
             req.flash('auth_errors', [{ msg: 'Girdiğiniz kod hatalı.' }]);
             res.redirect('/check')
@@ -35,10 +36,15 @@ const loginCheckPageShow = async (req, res) => {
             req.session.dogrulamaKodu = dogrulamaKodu;
 
             const transporter = nodemailer.createTransport({
-                service: 'gmail',
+                host: "mail.uzlasyazilim.com",
+                port: 587,
+                secure: false, 
                 auth: {
-                    user: process.env.gmail_user,
-                    pass: process.env.gmail_pass
+                  user: process.env.gmail_user, 
+                  pass: process.env.gmail_pass, 
+                },
+                tls: {
+                    rejectUnauthorized: false
                 }
             });
 
@@ -71,9 +77,7 @@ const loginCheckPageShow = async (req, res) => {
 
 
 }
-const showRegisterPage = (req, res) => {
-    res.render('userLoginRegister/register', { layout: 'layout/auth_layout.ejs' })
-}
+
 const showForgotPage = (req, res) => {
     res.render('userLoginRegister/forgot', { layout: 'layout/auth_layout.ejs' })
 }
@@ -83,14 +87,14 @@ const registerMe = async (req, res) => {
     if (!hatalar.isEmpty()) {
         req.flash('auth_errors', hatalar.array())
         req.flash('form_input', formİnputVal)
-        res.redirect('/register')
+        res.redirect('/login')
     } else {
 
         const _user = await User.findOne({ email: req.body.email });
         if (_user && _user.aktif == true) {
             req.flash('form_input', formİnputVal);
             req.flash('auth_errors', [{ msg: 'Bu mail zaten kullanımda' }]);
-            res.redirect('/register')
+            res.redirect('/login')
         } else {
             if (_user) {
                 User.findByIdAndDelete(_user._id)
@@ -107,10 +111,15 @@ const registerMe = async (req, res) => {
             const url = process.env.WEB_SITE_URL + 'verifyEmail?token=' + token;
 
             const transporter = nodemailer.createTransport({
-                service: 'gmail',
+                host: "mail.uzlasyazilim.com",
+                port: 587,
+                secure: false, 
                 auth: {
-                    user: process.env.gmail_user,
-                    pass: process.env.gmail_pass
+                  user: process.env.gmail_user, 
+                  pass: process.env.gmail_pass, 
+                },
+                tls: {
+                    rejectUnauthorized: false
                 }
             });
 
@@ -171,6 +180,7 @@ const login = async (req, res, next) => {
             failureRedirect: '/login',
             failureFlash: true
         })(req, res, next);
+
     }
 }
 const forgotMyPass = async (req, res) => {
@@ -203,10 +213,15 @@ const forgotMyPass = async (req, res) => {
             const url = process.env.WEB_SITE_URL + 'new-pass/' + _user._id + '/' + token;
 
             const transporter = nodemailer.createTransport({
-                service: 'gmail',
+                host: "mail.uzlasyazilim.com",
+                port: 587,
+                secure: false, 
                 auth: {
-                    user: process.env.gmail_user,
-                    pass: process.env.gmail_pass
+                  user: process.env.gmail_user, 
+                  pass: process.env.gmail_pass, 
+                },
+                tls: {
+                    rejectUnauthorized: false
                 }
             });
 
@@ -292,7 +307,6 @@ const newPass = async (req, res) => {
 
 module.exports = {
     showLoginPage,
-    showRegisterPage,
     showForgotPage,
     registerMe,
     verifyEmail,

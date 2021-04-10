@@ -4,6 +4,7 @@ const adminCheck = require('../middlewares/adminCheck');
 const validationMW = require('../middlewares/formValidatesMW')
 const update = require('../config/multer_config');
 
+route.get('/panel-login', adminController.PanelLoginPageShow)
 route.get('/panel', adminCheck.adminCheck, adminController.showAdminPanel)
 route.get('/logout', adminCheck.adminCheck, adminController.adminLogout)
 route.get('/me', adminCheck.adminCheck, adminController.showAdminProfile)
@@ -15,8 +16,7 @@ route.get('/show-product/:id', adminCheck.adminCheck, adminController.showThisPr
 route.get('/update-user/:id', adminCheck.adminCheck, adminController.showAndUpdateUserPage)
 route.get('/urunler', adminCheck.adminCheck, adminController.showProducts)
 
-
-
+route.post('/panel-login', adminController.loginAdminPanel)
 
 route.post('/update-profile/:id?', adminCheck.adminCheck, update.userMulter.single('avatar') , adminController.updateAdminProfile)
 route.post('/add-user', adminCheck.adminCheck, validationMW.registerValidate(), adminController.addUser)

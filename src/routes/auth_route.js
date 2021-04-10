@@ -1,9 +1,10 @@
 const route = require('express').Router()
 const authController = require('../controllers/auth_controller')
+const defaultController = require('../controllers/default_controller')
 const formValidateMW = require('../middlewares/formValidatesMW')
 
+route.get('/', defaultController.showIndexPage)
 route.get('/login', authController.showLoginPage)
-route.get('/register', authController.showRegisterPage)
 route.get('/forgot', authController.showForgotPage)
 route.get('/verifyEmail', authController.verifyEmail)
 route.get('/new-pass/:id/:token', authController.newPassPageShow)

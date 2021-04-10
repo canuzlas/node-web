@@ -1,20 +1,50 @@
 const { validationResult } = require('express-validator');
 const User = require('../models/user_model');
 const Product = require('../models/product_model');
+const connectMYSQL = require("../config/mysql_database");
 const fs = require('fs');
 const path = require('path');
 const bcrypt = require('bcrypt');
+const md5 = require("md5");
+
 
 const showAdminPanel = (req, res) => {
-    res.render('adminPanel/admin_panel', { layout: 'layout/admin_layout.ejs', user: req.user })
+    res.render('adminPanel/admin_panel', { layout: 'layout/admin_layout.ejs', user: req.session.user })
 }
+
+const PanelLoginPageShow = (req, res) => {
+    res.render('adminPanel/login-panel', { layout: 'layout/auth_layout.ejs' })
+}
+
+const loginAdminPanel = (req,res)=>{
+
+        const sql = "SELECT * FROM admin WHERE admin_email =? and admin_pass = ? "  ;
+        const mail = req.body.adminemail;
+        const pass = md5(req.body.adminpass);
+          
+        connectMYSQL.query(sql,[mail,pass], (err,result) => {
+            if(err){
+               console.log(err);
+            }
+            if(result){
+        
+                req.session.admin = "true";
+                const user = {ad: result[0].admin_ad, soyad:result[0].admin_soyad, email:result[0].admin_email,avatar: "default.png"};
+                req.session.user = user;
+            
+                res.redirect('/admin/panel')
+            }
+        })
+}
+
 const adminLogout = (req, res) => {
     req.logOut();
+    delete req.session.admin;
     req.flash('auth_success', [{ msg: 'Başarıyla Çıkış Yaptınız.' }])
-    res.redirect('/login')
+    res.redirect('/admin/panel-login')
 }
 const showAdminProfile = (req, res) => {
-    res.render('adminPanel/admin_profile', { layout: 'layout/admin_layout.ejs', user: req.user })
+    res.render('adminPanel/admin_profile', { layout: 'layout/admin_layout.ejs', user: req.session.user })
 }
 const updateAdminProfile = async (req, res) => {
     if(req.params.id){
@@ -53,12 +83,28 @@ const updateAdminProfile = async (req, res) => {
     }else{
         if (!req.file) {
             try {
-                const sonuc = await User.findByIdAndUpdate(req.user.id, { ad: req.body.ad, soyad: req.body.soyad });
-                if (sonuc) {
-                    req.flash('auth_success', [{ msg: 'Profil güncellendi.' }])
-                    res.redirect('/admin/me')
-                }
-    
+            
+                    const sql = "UPDATE admin SET admin_ad =?,admin_soyad=? WHERE admin_email =?";
+                    const ad = req.body.ad;
+                    const soyad = req.body.soyad;
+                    const email = req.body.email;
+
+                    console.log(req.body.ad,req.body.soyad,req.body.email);
+                      
+                    connectMYSQL.query(sql,[ad,soyad,email], (err,result) => {
+                        if(err){
+                           console.log(err);
+                        }
+                        if(result){
+                            
+                            console.log(result);
+                            const user = {ad: req.body.ad, soyad:req.body.soyad, email:req.body.email,avatar: "default.png"};
+                            req.session.user = user;
+                            req.flash('auth_success', [{ msg: 'Profil güncellendi.' }])
+                            res.redirect('/admin/me')
+                        }
+                    })
+                    
             } catch (error) {
                 req.flash('auth_errors', [{ msg: 'Hata çıktı' }]);
                 res.redirect('/admin/me')
@@ -104,7 +150,7 @@ const deleteMe = async (req, res) => {
 }
 const showUsersPage = async (req,res) => {
     const allUsers = await User.find().sort({_id:'desc'});
-    res.render('adminPanel/users',{layout:'layout/users_layout',user:req.user,allUsers:allUsers})
+    res.render('adminPanel/users',{layout:'layout/users_layout',user:req.session.user,allUsers:allUsers})
 }
 const deleteUserById = async (req,res) => {
     const ID = req.params.id;
@@ -126,7 +172,7 @@ const showAndUpdateUserPage = async (req,res)=>{
             req.flash('auth_errors',[{msg:'Kullanıcı Bulunamadı.'}])
             res.redirect('/admin/users')
         }else{
-            res.render('adminPanel/oneUser',{layout:'layout/admin_layout',decoded:decoded,user:req.user})
+            res.render('adminPanel/oneUser',{layout:'layout/admin_layout',decoded:decoded,user:req.session.user})
         }
     });
 }
@@ -146,11 +192,12 @@ const addUser = async (req,res)=>{
 
 const showProducts = async(req,res) => {
     const products = await Product.find().sort({_id:'desc'});
-    res.render('adminPanel/showProducts',{layout:'layout/users_layout', products:products,user:req.user})
+    res.render('adminPanel/showProducts',{layout:'layout/users_layout', products:products,user:req.session.user})
 }
 
 const addProduct = async (req,res)=>{
    
+
     const _product = await new Product(req.body);
     _product.urunFoto = req.file.filename;
     const sonuc = await _product.save();
@@ -158,23 +205,63 @@ const addProduct = async (req,res)=>{
         req.flash('auth_success',[{msg:'Ürün Başarıyla eklendi.'}]);
         res.status(201).redirect('/admin/urunler')
     }
-    
+
+    connection.connect(err => {
+
+        if(!err){
+            console.log("mysql bağlandi");
+        }
+        const sql = "INSERT INTO products (products_id,products_ad,products_fiyat) VALUES ?";
+        var values = [
+            [_product._id, _product.urunAd,_product.urunFiyat]
+        ];
+          
+        connection.query(sql, [values], (err,result) => {
+            if(!err){
+                console.log("kaydedildi");
+            }
+        })
+
+    })
+        
 }
 
 const deleteProductById = async (req,res) => {
     const ID = req.params.id;
-    await Product.findByIdAndDelete(ID,{},async (err,decoded)=>{
+    const product = await Product.findById(ID); 
+    const foto = product.urunFoto;
+    
+    const sonuc = await Product.findByIdAndDelete(ID,{},(err,decoded)=>{
         if(err){
             req.flash('auth_errors',[{msg:'Ürün Bulunamadı.'}])
             res.redirect('/admin/urunler')
         }else{
-            await fs.unlink(path.resolve(__dirname,'../uploads/products/'+decoded.urunFoto),err=>{
-                console.log(err)
+            connection.connect(err => {
+
+                if(!err){
+                    console.log("mysql bağlandi");
+                }
+                const sql = "DELETE FROM products WHERE products_id=?";
+                var values = [
+                    [ID]
+                ];
+                  
+                connection.query(sql, [values], (err,result) => {
+                    if(!err){
+                        console.log("silindi");
+                    }
+                })
+        
+            })
+            fs.unlink(path.resolve(__dirname,'../uploads/products/'+foto),err=>{
+               if(err)
+               console.log(err)
             })
             req.flash('auth_success',[{msg:'Ürün tamamen silindi.'}])
             res.redirect('/admin/urunler')
         }
     });
+ 
 }
 
 const showThisProductPage = async (req,res)=>{
@@ -184,7 +271,7 @@ const showThisProductPage = async (req,res)=>{
             req.flash('auth_errors',[{msg:'Kullanıcı Bulunamadı.'}])
             res.redirect('/admin/urunler')
         }else{
-            res.render('adminPanel/oneProduct',{layout:'layout/admin_layout',product:decoded,user:req.user})
+            res.render('adminPanel/oneProduct',{layout:'layout/admin_layout',product:decoded,user:req.session.user})
             
         }
     });
@@ -245,5 +332,7 @@ module.exports = {
     addProduct,
     deleteProductById,
     showThisProductPage,
-    updateProduct
+    updateProduct,
+    PanelLoginPageShow,
+    loginAdminPanel
 }

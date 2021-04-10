@@ -9,6 +9,8 @@ const loginWithFacebook = (req, res) => {
         failureRedirect: "/login",
         failureFlash: true
     })(req, res)
+
+    
 }
 
 module.exports = {
