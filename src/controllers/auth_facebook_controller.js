@@ -5,12 +5,10 @@ const loginPageWithFacebook = passport.authenticate("facebook", { scope: ['publi
 
 const loginWithFacebook = (req, res) => {
     passport.authenticate("facebook", {
-        successRedirect: "/admin/panel",
+        successRedirect: "/",
         failureRedirect: "/login",
         failureFlash: true
     })(req, res)
-
-    
 }
 
 module.exports = {

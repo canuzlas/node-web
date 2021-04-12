@@ -5,19 +5,51 @@
                 <div class="col-sm-6">
                     <div class="contactinfo">
                         <ul class="nav nav-pills">
-                            <li><a href="#"><i class="fa fa-phone"></i> +2 95 01 88 821</a></li>
-                            <li><a href="#"><i class="fa fa-envelope"></i> info@domain.com</a></li>
+                            <li><a href="#"><i class="fa fa-phone"></i>
+                            <% settings.forEach(setting => { %>
+                             <%if(setting.headerSettingAd == "sabittel"){%> 
+                                <%-setting.headerSettingLink %> 
+                             <% } %>
+                            <% }) %>
+                            </a></li>
+                            <li><a href="#"><i class="fa fa-envelope"></i>
+                                <% settings.forEach(setting => { %>
+                                    <%if(setting.headerSettingAd == "iletişim mail"){%> 
+                                       <%-setting.headerSettingLink %> 
+                                    <% } %>
+                                   <% }) %>
+                            </a></li>
                         </ul>
                     </div>
                 </div>
                 <div class="col-sm-6">
                     <div class="social-icons pull-right">
                         <ul class="nav navbar-nav">
-                            <li><a href="#"><i class="fa fa-facebook"></i></a></li>
-                            <li><a href="#"><i class="fa fa-twitter"></i></a></li>
-                            <li><a href="#"><i class="fa fa-linkedin"></i></a></li>
-                            <li><a href="#"><i class="fa fa-dribbble"></i></a></li>
-                            <li><a href="#"><i class="fa fa-google-plus"></i></a></li>
+                            <li><a  target="_blank" href=" <% settings.forEach(setting => { %>
+                                <%if(setting.headerSettingAd == "facebook"){%> 
+                                   <%-setting.headerSettingLink %> 
+                                <% } %>
+                               <% }) %>"><i class="fab fa-facebook-f"></i></a></li>
+                            <li><a target="_blank" href=" <% settings.forEach(setting => { %>
+                                <%if(setting.headerSettingAd == "instagram"){%> 
+                                   <%-setting.headerSettingLink %> 
+                                <% } %>
+                               <% }) %>"><i class="fab fa-instagram"></i></a></li>
+                            <li><a target="_blank" href=" <% settings.forEach(setting => { %>
+                                <%if(setting.headerSettingAd == "twitter"){%> 
+                                   <%-setting.headerSettingLink %> 
+                                <% } %>
+                               <% }) %>"><i class="fab fa-twitter"></i></a></li>
+                            <li><a target="_blank" href=" <% settings.forEach(setting => { %>
+                                <%if(setting.headerSettingAd == "youtube"){%> 
+                                   <%-setting.headerSettingLink %> 
+                                <% } %>
+                               <% }) %>"><i class="fab fa-youtube"></i></a></li>
+                            <li><a target="_blank" href=" <% settings.forEach(setting => { %>
+                                <%if(setting.headerSettingAd == "whatsapp"){%> 
+                                   <%-setting.headerSettingLink %> 
+                                <% } %>
+                               <% }) %>"><i class="fab fa-whatsapp"></i></a></li>
                         </ul>
                     </div>
                 </div>
@@ -30,13 +62,13 @@
             <div class="row">
                 <div class="col-sm-4">
                     <div class="logo pull-left">
-                        <a href="/"><img src="/default/images/home/logo.png" alt="" /></a>
+                        <a href="/"><img style="height: 39px; width: 139px;" src="/<%-logo[0].headerSettingLink%> " alt="" /></a>
                     </div>
                 </div>
                 <div class="col-sm-8">
                     <div class="shop-menu pull-right">
                         <ul class="nav navbar-nav">
-                            <% if (uye != undefined && uye.isAuth) { %>
+                            <% if (uye != undefined) { %>
                                 <li><a href="#"><i class="fa fa-user"></i> Hesabım</a></li>
                                 <li><a href="#"><i class="fa fa-star"></i> İstek Listem</a></li>
                                 <li><a href="cart.html"><i class="fa fa-shopping-cart"></i> Sepet</a></li>

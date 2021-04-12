@@ -15,14 +15,16 @@ route.get('/delete-product/:id', adminCheck.adminCheck, adminController.deletePr
 route.get('/show-product/:id', adminCheck.adminCheck, adminController.showThisProductPage)
 route.get('/update-user/:id', adminCheck.adminCheck, adminController.showAndUpdateUserPage)
 route.get('/urunler', adminCheck.adminCheck, adminController.showProducts)
+route.get('/headersettings', adminCheck.adminCheck, adminController.showHeaderAllSettings)
+route.get('/show-header-setting/:id', adminCheck.adminCheck, adminController.showHeaderOneSetting)
 
 route.post('/panel-login', adminController.loginAdminPanel)
-
 route.post('/update-profile/:id?', adminCheck.adminCheck, update.userMulter.single('avatar') , adminController.updateAdminProfile)
 route.post('/add-user', adminCheck.adminCheck, validationMW.registerValidate(), adminController.addUser)
-
 route.post('/add-product', adminCheck.adminCheck, update.productMulter.single('urunFoto'), adminController.addProduct)
 route.post('/update-product/:id', adminCheck.adminCheck, update.productMulter.single('urunFoto'), adminController.updateProduct)
+route.post('/update-setting/:id', adminCheck.adminCheck, update.userMulter.single('headerSettingLink'), adminController.updateHeaderOneSetting)
+
 
 
 module.exports = route

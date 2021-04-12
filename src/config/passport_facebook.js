@@ -19,6 +19,7 @@ module.exports = function (passport) {
                     }
                     return done(null, _user);
                 } else {
+                    
                     const _user = await new User({
                         ad: profile.name.givenName,
                         soyad: profile.name.familyName,

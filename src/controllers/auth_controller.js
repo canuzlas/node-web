@@ -16,7 +16,6 @@ const loginCheckPageShow = async (req, res) => {
     if (req.params.check) {
 
         if (req.body.checkcode == req.session.dogrulamaKodu) {
-            req.session.uye = {isAuth:true,mail:req.session.mail}
             delete req.session.dogrulamaKodu;
             delete req.session.mail;
             res.redirect('/')
