@@ -1,0 +1,22 @@
+
+<div class="wrapper bg-white">
+    <% if (locals.auth_errors != undefined || locals.auth_success != undefined || locals.login_error != undefined) { %>
+        <%- include('../partials/_validateErrorMsg') %> 
+     <% } %>
+
+    <form action="/admin/update-category/<%=category.id%>" method="POST">
+
+        <div class="py-2">
+            <div class="row py-2">
+                <div class="col-md-6"> <label for="firstname">Kategori Adı</label> <input type="text" name="categoryAd"
+                        class="bg-light form-control" value="<%- category.categoryAd %> "> </div>
+                <div class="col-md-6 pt-md-0 pt-3"> <label for="lastname">Kategori Linki</label> <input type="text" name="categoryLink"
+                        class="bg-light form-control" value="<%=category.categoryLink %> "> </div>
+            </div>
+           
+            <div class="py-3 pb-4 border-bottom">
+                <button class="btn btn-primary mr-3">Güncelle</button>
+            </div>
+    </form>
+</div>
+</div>

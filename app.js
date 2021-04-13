@@ -48,6 +48,7 @@ app.use(passport.session());
 app.use(express.static('public'));
 app.use(express.static('./src/uploads/admin'));
 app.use(express.static('./src/uploads/products'));
+app.use(express.static('./src/uploads/sliders'));
 
 app.use(express.urlencoded({ extended: false }));
 

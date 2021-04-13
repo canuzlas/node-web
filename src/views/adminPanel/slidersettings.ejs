@@ -1,0 +1,91 @@
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h5 class="m-0 font-weight-bold text-primary">Sliders</h5>
+        <br>
+        <div class="dropdown">
+            <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton"
+                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Dışa Aktar
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <a class="dropdown-item" href="#">
+                    <button type="button" class="btn btn-dark icon-split btn-sm" onclick="tiklama('kopyala');">
+                        <span class="icon text-white-60">
+                            <i class="far fa-clipboard"></i>
+                        </span>
+                        <span class="text">Kopyala</span>
+                    </button>
+                </a>
+                <a class="dropdown-item" href="#">
+                    <button type="button" class="btn btn-success icon-split btn-sm" onclick="tiklama('excel');">
+                        <span class="icon text-white-60">
+                            <i class="far fa-file-excel"></i>
+                        </span>
+                        <span class="text">Excel</span>
+                    </button>
+                </a>
+                <a class="dropdown-item" href="#">
+                    <button type="button" class="btn btn-danger icon-split btn-sm" onclick="tiklama('pdf');">
+                        <span class="icon text-white-60">
+                            <i class="far fa-file-pdf"></i>
+                        </span>
+                        <span class="text">PDF</span>
+                    </button>
+                </a>
+                <a class="dropdown-item" href="#">
+                    <button type="button" class="btn btn-info icon-split btn-sm" onclick="tiklama('csv');">
+                        <span class="icon text-white-60">
+                            <i class="fas fa-file-csv"></i>
+                        </span>
+                        <span class="text">CSV</span>
+                    </button>
+                </a>
+            </div>
+        </div>
+        <div align='center'>
+            <br>
+            <% if (locals.auth_errors !=undefined || locals.auth_success !=undefined || locals.login_error !=undefined)
+                { %>
+                <%- include('../partials/_validateErrorMsg') %>
+                    <% } %>
+        </div>
+    </div>
+    <div class="card-body">
+
+        <div class="table-responsive">
+            <table class="table table-bordered users" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>Slider Başlık</th>
+                        <th>Açıklama</th>
+                        <th>Link Buton</th>
+                        <th>İşlemler</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+              
+                    <% sliders.forEach(slider=> {  %>
+                        
+                    <tr>
+                            <td><%= slider.sliderBaslik %> </td>
+                            <td><%= slider.sliderDesc  %> </td>
+                            <td><%= slider.sliderLink  %> </td>
+                            <td align="center">
+                                <a href="/admin/show-slider/<%-slider.id%> " class="btn btn-info btn-circle">
+                                    <i class="fas fa-info-circle"></i>
+                                </a>
+                            </td>
+                    </tr>
+                    <% }) %>
+    
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+ 
+  

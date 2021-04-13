@@ -1,0 +1,37 @@
+
+<div class="wrapper bg-white">
+    <% if (locals.auth_errors != undefined || locals.auth_success != undefined || locals.login_error != undefined) { %>
+        <%- include('../partials/_validateErrorMsg') %> 
+     <% } %>
+
+    <form action="/admin/update-slider/<%-slider.id%>" method="POST" enctype="multipart/form-data">
+
+        <div class="d-flex align-items-start py-3 border-bottom"> <img
+                src="/<%=slider.sliderFoto%>"
+                class="img" alt="">
+            <div class="pl-sm-4 pl-2" id="img-section"> <b>Slider Fotoğrafı</b>
+                <p style="font-size: 9px">Yalnız .png .jpg .jpeg yükleyin. (484x441)</p> <input style="max-width: 200px ; font-size: 10px;"
+                   type="file" name="sliderFoto" class="btn button border">
+            </div>
+        </div>
+        <div class="py-2">
+            <div class="row py-2">
+                <div class="col-md-6"> <label for="firstname">Slider Başlık</label> <input type="text" name="sliderBaslik"
+                        class="bg-light form-control" value="<%- slider.sliderBaslik %> "> </div>
+                <div class="col-md-6 pt-md-0 pt-3"> <label for="lastname">Slider Açıklama</label> <input type="text" name="sliderDesc"
+                        class="bg-light form-control" value="<%- slider.sliderDesc %> "> </div>
+            </div>
+            <div class="row py-2">
+                <div class="col-md-12"> <label for="email">Slider Button </label> <input type="text" name="sliderLink"
+                        class="bg-light form-control" value="<%- slider.sliderLink %> "> </div>
+            </div>
+            <div class="row py-2">
+                <div class="col-md-12"> <label for="email">Slider Foto Link </label> <input type="text" name="sliderFoto"
+                        class="bg-light form-control" value="<%- slider.sliderFoto %> "> </div>
+            </div>
+            <div class="py-3 pb-4 border-bottom">
+                <button class="btn btn-primary mr-3">Güncelle</button>
+            </div>
+    </form>
+</div>
+</div>

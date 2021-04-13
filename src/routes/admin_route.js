@@ -17,6 +17,11 @@ route.get('/update-user/:id', adminCheck.adminCheck, adminController.showAndUpda
 route.get('/urunler', adminCheck.adminCheck, adminController.showProducts)
 route.get('/headersettings', adminCheck.adminCheck, adminController.showHeaderAllSettings)
 route.get('/show-header-setting/:id', adminCheck.adminCheck, adminController.showHeaderOneSetting)
+route.get('/slidersettings', adminCheck.adminCheck, adminController.showSliderAllSettings)
+route.get('/show-slider/:id', adminCheck.adminCheck, adminController.showSliderOneSettings)
+route.get('/categoryes', adminCheck.adminCheck, adminController.showCategoryesSettings)
+route.get('/delete-category/:id', adminCheck.adminCheck, adminController.deleteCategory)
+route.get('/show-category/:id', adminCheck.adminCheck, adminController.showOneCategory)
 
 route.post('/panel-login', adminController.loginAdminPanel)
 route.post('/update-profile/:id?', adminCheck.adminCheck, update.userMulter.single('avatar') , adminController.updateAdminProfile)
@@ -24,7 +29,9 @@ route.post('/add-user', adminCheck.adminCheck, validationMW.registerValidate(), 
 route.post('/add-product', adminCheck.adminCheck, update.productMulter.single('urunFoto'), adminController.addProduct)
 route.post('/update-product/:id', adminCheck.adminCheck, update.productMulter.single('urunFoto'), adminController.updateProduct)
 route.post('/update-setting/:id', adminCheck.adminCheck, update.userMulter.single('headerSettingLink'), adminController.updateHeaderOneSetting)
-
+route.post('/update-slider/:id', adminCheck.adminCheck, update.sliderMulter.single('sliderFoto'), adminController.updateSliderOneSetting) 
+route.post('/add-category', adminCheck.adminCheck, adminController.addCategory)
+route.post('/update-category/:id', adminCheck.adminCheck, adminController.updateCategory)
 
 
 module.exports = route

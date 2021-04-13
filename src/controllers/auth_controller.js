@@ -5,11 +5,18 @@ const jwt = require('jsonwebtoken')
 const nodemailer = require('nodemailer')
 const passport = require('passport')
 const axios = require('axios')
+const HeaderSettings = require('../models/header_model')
 require('../config/passport_local')(passport)
 
 
-const showLoginPage = (req, res) => {
-    res.render('userLoginRegister/login', { layout: 'defaultLayout/default_layout.ejs' })
+const showLoginPage = async(req, res) => {
+    const settings = await HeaderSettings.find();
+    const logo = await settings.filter(setting => {
+        if(setting.headerSettingAd == "logo"){
+            return setting.headerSettingLink
+        }
+    })
+    res.render('userLoginRegister/login', { layout: 'defaultLayout/default_layout.ejs',uye:req.user, settings:settings,logo:logo })
 }
 const loginCheckPageShow = async (req, res) => {
 

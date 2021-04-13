@@ -22,6 +22,17 @@ const myMulterProductStorage = multer.diskStorage({
     }
 })
 
+const myMulterSliderStorage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, path.resolve(__dirname, '../uploads/sliders'))
+    },
+
+    filename: function (req, file, cb) {
+        const fileName = Date.now() + path.extname(file.originalname);
+        cb(null, fileName);
+    }
+})
+
 const myMulterFileFilter = function (req, file, cb) {
    if(file.mimetype == 'image/jpeg' || file.mimetype == 'image/png' || file.mimetype == 'image/jpg')
         cb(null,true)
@@ -32,5 +43,6 @@ const myMulterFileFilter = function (req, file, cb) {
 
 const userMulter = multer({storage:myMulterStorage,fileFilter:myMulterFileFilter});
 const productMulter = multer({storage:myMulterProductStorage,fileFilter:myMulterFileFilter});
+const sliderMulter = multer({storage:myMulterSliderStorage,fileFilter:myMulterFileFilter});
 
-module.exports = {userMulter,productMulter}
+module.exports = {userMulter,productMulter,sliderMulter}
