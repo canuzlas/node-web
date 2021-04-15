@@ -1,0 +1,47 @@
+<%- include('../defaultPartials/headers.ejs') %>
+<section id="cart_items">
+
+		<div class="container">
+			<div class="table-responsive cart_info">
+				<table class="table table-condensed">
+					<thead>
+						<tr class="cart_menu">
+							<td class="image">Ürün</td>
+							<td class="description">Ürün Adı</td>
+							<td class="price">Fiyat</td>
+							<td class="quantity">Adet</td>
+							<td class="total">Toplam</td>
+							<td></td>
+						</tr>
+					</thead>
+					<tbody>
+						<% if (basketProducts != undefined) {%>
+							<% basketProducts.forEach(product => { %>
+								<tr>
+									<td class="cart_product">
+									<img width="50" height="50" src="/<%-product.products_foto%> " alt="">
+									</td>
+									<td class="cart_description">
+										<p><%-product.products_ad%></p>
+									</td>
+									<td class="cart_price">
+										<p><%-product.urun_fiyat%></p>
+									</td>
+									<td class="cart_quantity">
+										<b><p style="font-size: 20px !important"><%-product.urun_adet%></p></b>
+									</td>
+									<td class="cart_total">
+										<p class="cart_total_price"><%-product.urun_fiyat*product.urun_adet%> tl </p>
+									</td>
+									<td class="cart_delete">
+										<a class="cart_quantity_delete" href=""><i class="fa fa-times"></i></a>
+									</td>
+								</tr>
+							<% }) %>
+						<% } %>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</section> <!--/#cart_items-->
+	<%- include('../defaultPartials/footer.ejs') %>

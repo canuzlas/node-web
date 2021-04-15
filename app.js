@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const authRouter = require('./src/routes/auth_route');
 const adminRouter = require('./src/routes/admin_route');
+const basketRouter = require('./src/routes/basket_route');
 const apiRouter = require('./src/routes/api_route');
 const googleAuthRouter = require('./src/routes/google_auth_router');
 const facebookAuthRouter = require('./src/routes/facebook_auth_router');
@@ -58,9 +59,11 @@ app.set('views', path.resolve(__dirname, './src/views'));
 
 app.use('/', authRouter);
 app.use('/admin', adminRouter);
+app.use('/basket', basketRouter)
 app.use('/api',apiRouter);
 app.use('/auth/google',googleAuthRouter);
 app.use('/auth/facebook',facebookAuthRouter);
+
 
 app.use((req,res)=>{
     res.status(404).render('404',{layout:'layout/404_layout.ejs'})

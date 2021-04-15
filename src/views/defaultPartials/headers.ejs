@@ -70,8 +70,7 @@
                         <ul class="nav navbar-nav">
                             <% if (uye != undefined) { %>
                                 <li><a href="#"><i class="fa fa-user"></i> Hesabım</a></li>
-                                <li><a href="#"><i class="fa fa-star"></i> İstek Listem</a></li>
-                                <li><a href="cart.html"><i class="fa fa-shopping-cart"></i> Sepet</a></li>
+                                <li><a href="/basket"><i class="fa fa-shopping-cart"></i>Sepet : <p style="display: inline-block;"  id="sepetsayi">0</p> </a></li>
                             <% }else{ %>
                                 <li><a href="/login"><i class="fa fa-lock"></i> Giriş yap / Kaydol</a></li>
                             <% } %> 
@@ -98,15 +97,13 @@
                     <div class="mainmenu pull-left">
                         <ul class="nav navbar-nav collapse navbar-collapse">
                             <li><a href="/">Anasayfa</a></li>
-                            <li><a href="/">Alışverişe Başla </a></li>
+                            <li><a href="/shop">Alışverişe Başla </a></li>
                             <li><a href="contact-us.html">İletişim</a></li>
                         </ul>
                     </div>
                 </div>
                 <div class="col-sm-3">
-                    <div class="search_box pull-right">
-                        <input type="text" placeholder="Ürün ara"/>
-                    </div>
+
                 </div>
             </div>
         </div>

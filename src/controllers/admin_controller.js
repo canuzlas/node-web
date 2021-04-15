@@ -215,16 +215,18 @@ const addUser = async (req, res) => {
 }
 const showProducts = async (req, res) => {
     const products = await Product.find().sort({ _id: 'desc' });
-    res.render('adminPanel/showProducts', { layout: 'layout/users_layout', products: products, user: req.session.user })
+    const categoryes = await CategorySettings.find();
+    res.render('adminPanel/showProducts', { layout: 'layout/users_layout', products: products, categoryes:categoryes, user: req.session.user })
 }
 const addProduct = async (req, res) => {
     const _product = await new Product(req.body);
     _product.urunFoto = req.file.filename;
     const sonuc = await _product.save();
+
     if (sonuc != null) {
-        const sql = "INSERT INTO products (products_id,products_ad,products_fiyat) VALUES ?";
+        const sql = "INSERT INTO products (products_id,products_ad,products_fiyat,products_foto) VALUES ?";
         let values = [
-            [_product._id, _product.urunAd, _product.urunFiyat]
+            [_product._id, _product.urunAd, _product.urunFiyat,req.file.filename]
         ];
         connectMYSQL.query(sql, [values], (err, result) => {
             if (!err) {
@@ -288,7 +290,8 @@ const showThisProductPage = async (req, res) => {
         req.flash('auth_errors', [{ msg: 'Ürün Bulunamadı.' }])
         res.redirect('/admin/urunler')
     } else {
-        res.render('adminPanel/oneProduct', { layout: 'layout/admin_layout', product: product, user: req.session.user })
+        const categoryes = await CategorySettings.find();
+        res.render('adminPanel/oneProduct', { layout: 'layout/admin_layout', product: product, categoryes:categoryes, user: req.session.user })
     }
 }
 const updateProduct = async (req, res) => {
@@ -296,7 +299,7 @@ const updateProduct = async (req, res) => {
     if (req.params.id) {
         if (!req.file) {
             try {
-                const sonuc = await Product.findByIdAndUpdate(req.params.id, { urunAd: req.body.urunAd, urunFiyat: req.body.urunFiyat, urunAciklama: req.body.urunAciklama, urunStok: req.body.urunStok, urunOneCikar: req.body.urunOneCikar });
+                const sonuc = await Product.findByIdAndUpdate(req.params.id, { urunAd: req.body.urunAd, urunFiyat: req.body.urunFiyat, urunAciklama: req.body.urunAciklama, urunStok: req.body.urunStok, urunOneCikar: req.body.urunOneCikar, urunKategori:req.body.urunKategori });
                 if (sonuc != null) {
                     req.flash('auth_success', [{ msg: 'Ürün güncellendi.' }])
                     res.redirect('/admin/show-product/' + req.params.id)
@@ -319,7 +322,7 @@ const updateProduct = async (req, res) => {
                 });
             }
             try {
-                const sonuc = await Product.findByIdAndUpdate(req.params.id, { urunAd: req.body.urunAd, urunFiyat: req.body.urunFiyat, urunAciklama: req.body.urunAciklama, urunStok: req.body.urunStok, urunOneCikar: req.body.urunOneCikar, urunFoto: req.file.filename });
+                const sonuc = await Product.findByIdAndUpdate(req.params.id, { urunAd: req.body.urunAd, urunFiyat: req.body.urunFiyat, urunAciklama: req.body.urunAciklama, urunStok: req.body.urunStok, urunOneCikar: req.body.urunOneCikar, urunFoto: req.file.filename,urunKategori:req.body.urunKategori });
                 if (sonuc != null) {
                     req.flash('auth_success', [{ msg: 'Ürün güncellendi.' }])
                     res.redirect('/admin/show-product/' + req.params.id)

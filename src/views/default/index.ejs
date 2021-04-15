@@ -1,58 +1,162 @@
-<%- include('../defaultPartials/headers.ejs') %> 
-<%- include('../defaultPartials/slider.ejs') %>	
-<section>
-		<div class="container">
-			<div class="row">
-				<div class="col-sm-3">
-					<div class="left-sidebar">
-						<h2>Kategoriler</h2>
-						<div class="panel-group category-products" id="accordian"><!--category-productsr-->
-							<!-- kategoriler dönecek -->
-							<div class="panel panel-default">
-								<div class="panel-heading">
-									<h4 class="panel-title"><a href="#">Kids</a></h4>
-								</div>
-							</div>
-				
-						</div><!--/category-products-->
-					
-					</div>
-				</div>
-				
-				<div class="col-sm-9 padding-right">
-					<div class="features_items"><!--features_items-->
-						<h2 class="title text-center">Öne Çıkan Ürünler</h2>
-						<div class="col-sm-4">
-							<div class="product-image-wrapper">
-								<div class="single-products">
-										<div class="productinfo text-center">
-											<img src="/default/images/home/product1.jpg" alt="" />
-											<h2>$56</h2>
-											<p>Easy Polo Black Edition</p>
-											<a href="#" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</a>
+<%- include('../defaultPartials/headers.ejs') %>
+	<%- include('../defaultPartials/slider.ejs') %>
+		<section>
+			<div class="container">
+				<div class="row">
+					<div class="col-sm-3">
+						<div class="left-sidebar">
+							<h2>Kategoriler</h2>
+							<div class="panel-group category-products" id="accordian">
+								<!--category-productsr-->
+								<!-- kategoriler dönecek -->
+
+								<% categoryes.forEach(category=> { %>
+									<div class="panel panel-default">
+										<div class="panel-heading">
+											<h4 class="panel-title"><a href="/shop/category/<%-category.categoryLink%> ">
+													<%- category.categoryAd %>
+												</a></h4>
 										</div>
-										<div class="product-overlay">
-											<div class="overlay-content">
-												<h2>$56</h2>
-												<p>Easy Polo Black Edition</p>
-												<a href="#" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</a>
+									</div>
+									<% }) %>
+
+							</div>
+							<!--/category-products-->
+						</div>
+					</div>
+
+					<div class="col-sm-9 padding-right">
+
+						<div class="features_items">
+							<!--features_items-->
+							<h2 class="title text-center">Öne Çıkan Ürünler</h2>
+							<% if (uye !=null) { %>
+								<% oneCikanProducts.forEach(product=> { %>
+									<div class="col-sm-4">
+										<div class="product-image-wrapper">
+											<div class="single-products">
+												<div class="productinfo text-center">
+													<img src="/<%-product.urunFoto %> " alt="" />
+													<h2>
+														<%-product.urunFiyat %>
+													</h2>
+													<p>
+														<%-product.urunAd %>
+													</p>
+													<a href="<%-product._id %>"
+														class="btn btn-default add-to-cart sepeteekle"><i
+															class="fa fa-shopping-cart"></i>Sepete Ekle</a>
+												</div>
+												<div class="product-overlay">
+													<div class="overlay-content">
+														<h2>
+															<%-product.urunFiyat %>
+														</h2>
+														<p>
+															<%-product.urunAd %>
+														</p>
+
+														<a href="<%-product._id %>"
+															class="btn btn-default add-to-cart sepeteekle"><i
+																class="fa fa-shopping-cart"></i>Sepete Ekle</a>
+													</div>
+												</div>
 											</div>
 										</div>
-								</div>
-								<div class="choose">
-									<ul class="nav nav-pills nav-justified">
-										<li><a href="#"><i class="fa fa-plus-square"></i>Add to wishlist</a></li>
-										<li><a href="#"><i class="fa fa-plus-square"></i>Add to compare</a></li>
-									</ul>
-								</div>
-							</div>
+									</div>
+									<% }) %>
+										<% }else { %>
+											<% oneCikanProducts.forEach(product=> { %>
+												<div class="col-sm-4">
+													<div class="product-image-wrapper">
+														<div class="single-products">
+															<div class="productinfo text-center">
+																<img src="/<%-product.urunFoto %> " alt="" />
+																<h2>
+																	<%-product.urunFiyat %>
+																</h2>
+																<p>
+																	<%-product.urunAd %>
+																</p>
+
+																<a href="/login" class="btn btn-default add-to-cart"><i
+																		class="fa fa-shopping-cart"></i>Giriş Yap</a>
+
+															</div>
+															<div class="product-overlay">
+																<div class="overlay-content">
+																	<h2>
+																		<%-product.urunFiyat %>
+																	</h2>
+																	<p>
+																		<%-product.urunAd %>
+																	</p>
+																	<a href="/login"
+																		class="btn btn-default add-to-cart"><i
+																			class="fa fa-shopping-cart"></i>Giriş
+																		Yap</a>
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+												<% }) %>
+													<% } %>
+
 						</div>
-					</div><!--features_items-->
-					
-					
-					
+						<!--features_items-->
+					</div>
 				</div>
 			</div>
-		</div>
-</section>
-<%- include('../defaultPartials/footer.ejs') %>
+		</section>
+		<%- include('../defaultPartials/footer.ejs') %>
+
+			<script src="//cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+			<script>
+
+				$(document).ready(function () {
+					$('.sliderbuton').click(function(){
+
+						window.location('/shop')
+					});
+
+					$('.sepeteekle').click(function (event) {
+
+						let degerler = $(this).attr('href');
+						$.ajax({
+							method: 'POST',
+							url: '/basket',
+							data: { urunid: degerler },
+							success: function (data) {
+								let sayi = $('#sepetsayi').text();
+                                $('#sepetsayi').text(parseInt(sayi)+1);
+								if (data.status) {
+									Swal.fire({
+										position: 'top-end',
+										icon: 'success',
+										title: 'Ürün Sepete Eklendi',
+										showConfirmButton: false,
+										timer: 1500
+									})
+								}else{
+									Swal.fire({
+										position: 'top-end',
+										icon: 'error',
+										title: 'Hata.!',
+										showConfirmButton: false,
+										timer: 1500
+									})
+								}
+
+							}
+						})
+
+
+						event.preventDefault();
+					})
+				})
+
+
+
+			</script>

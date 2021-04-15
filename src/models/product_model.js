@@ -25,6 +25,9 @@ const ProductSchema = new Schema({
     },
     urunFoto:{
         type:String
+    },
+    urunKategori:{
+        type:String
     }
     
 },{timestamps:true})

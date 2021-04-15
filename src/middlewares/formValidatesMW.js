@@ -60,10 +60,18 @@ const forgotPassValidate = () => {
         })
     ]
 }
+const bultenEmailCheck = () => {
+    return [
+        body('bultenemail')
+            .trim()
+            .isEmail().withMessage('Lütfen geçerli bir mail türü girin.')
+    ]
+}
 
 module.exports = {
     registerValidate,
     loginValidate,
     forgotValidate,
-    forgotPassValidate
+    forgotPassValidate,
+    bultenEmailCheck
 }

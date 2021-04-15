@@ -30,6 +30,16 @@
                         class="bg-light form-control" value="<%=product.urunStok %> "> </div>
             </div>
             <div class="row py-2">
+                <div class="col-md-12">  <select class="form-control" name="urunKategori">
+                    <% categoryes.forEach(kategori =>{ %>
+                       
+                            <option  <%=(kategori._id == product.urunKategori)?'selected':''%>  value="<%=kategori._id%>"><%=kategori.categoryAd%></option>
+
+                    <% })%>
+                </select> </div>
+            </div>
+           
+            <div class="row py-2">
                 <div class="col-md-12"> <label for="text">Ürün Öne Çıkar</label> 
                 <select name="urunOneCikar">
                         <option <%=product.urunOneCikar==false?"selected":""%>  value="false">hayır</option>
