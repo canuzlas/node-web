@@ -21,6 +21,7 @@
     "express-recaptcha": "^5.0.2",
     "express-session": "^1.17.1",
     "express-validator": "^6.9.2",
+    "iyzipay": "^2.0.48",
     "jsonwebtoken": "^8.5.1",
     "md5": "^2.3.0",
     "mongoose": "^5.11.15",
@@ -30,6 +31,7 @@
     "passport": "^0.4.1",
     "passport-facebook": "^3.0.0",
     "passport-google-oauth": "^2.0.0",
-    "passport-local": "^1.0.0"
+    "passport-local": "^1.0.0",
+    "util": "^0.12.3"
   }
 }

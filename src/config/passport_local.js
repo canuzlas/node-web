@@ -9,8 +9,6 @@ module.exports = function (passport) {
     };
     passport.use(new LocalStrategy(options, async (email, pass, done) => {
         
-
-        try {
             const _bulunanUser = await User.findOne({ email: email });
 
             if (!_bulunanUser) {
@@ -24,29 +22,22 @@ module.exports = function (passport) {
 
                 if (_bulunanUser && _bulunanUser.aktif === false) {
                     return done(null, false, { message: 'Lütfen emailinizi onaylayın.!' });
-                }else 
-                    return done(null, _bulunanUser);
+                }else{
+                    return done(null,_bulunanUser,{});
+                }    
             }
-
-        } catch (err) {
-            return done(err);
-        }
-
-
 
     }));
 
-    passport.serializeUser(function (user, done) {
-       
-        done(null, user._id);
-      });
-      
-    passport.deserializeUser(function (id, done) {
-       
+    passport.serializeUser(function (user, cb) {
+        cb(null, user._id);
+    });
+
+    passport.deserializeUser(function (id, cb) {
         User.findById(id, function (err, user) {
-          done(err, user);
+            cb(err, user);
         });
-      });
+    });
 
 
 }

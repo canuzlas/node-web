@@ -1,0 +1,117 @@
+<%- include('../defaultPartials/headers.ejs') %>
+    <section id="cart_items">
+
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8 col-sm-12 mt-3">
+                    <% if (locals.auth_errors != undefined || locals.auth_success != undefined || locals.login_error != undefined) { %>
+                        <%- include('../partials/_validateErrorMsg') %> 
+                     <% } %>
+                   <div class="row">
+                    <form action="/basket/paypage" method="POST">
+                    
+                        <div class="form-group col-md-6">
+                            <label>Ad</label>
+                            <input min="3" type="text" name="siparisAd" class="form-control" placeholder="Adınız"
+                                required>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label>Soyad</label>
+                            <input min="3" type="text" name="siparisSoyad" class="form-control" placeholder="Soy Adınız"
+                                required>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label>Email</label>
+                            <input min="7" type="email" name="siparisEmail" class="form-control"
+                                placeholder="Email Adresiniz" required>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label>GSM no</label>
+                            <input min="13" type="text" name="siparisGsm" class="form-control" value="+90" required>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label>TC Kimlik No</label>
+                            <input min="11" max="11" type="text" name="siparisTC" class="form-control" required>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <label>Adres</label>
+                            <input min="10" type="text" name="siparisAdres" class="form-control" placeholder="Teslimat Adresi" required>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label>İl</label>
+                            <input min="3" type="text" name="siparisİl" class="form-control" placeholder="İl"
+                                required>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label>Ülke</label>
+                            <input min="3" type="text" name="siparisUlke" class="form-control" value="Türkiye" required>
+                        </div>
+                    
+                   </div>
+                </div>
+
+                <div style="margin-bottom: 50px;" class="col-md-4 mt-3">
+                    <div class="card border-0 shadow text-center text-white bg-dark p-3">
+                        <small>1. Adım</small>
+                        <h5><b>Sepetteki Ürünler</b></h5>
+                        <div class="clearfix"></div>
+                        <hr>
+                        <small>2. Adım</small>
+                        <h3><b class="text-success">Adres Bilgileri</b></h3>
+                        <div class="clearfix"></div>
+                        <hr>
+                        <small>3. Adım</small>
+                        <h5><b>Ödeme Ekranı</b></h5>
+                        <div class="clearfix"></div>
+                        <hr>
+                        <div align="center" class="mt-2">
+                            <button type="submit" class="btn btn-primary btn-lg">Ödemeye Geç</button>
+                        </div>
+                    </form>
+                    </div>
+                </div>
+
+
+
+            </div>
+        </div>
+    </section>
+    <!--/#cart_items-->
+    <%- include('../defaultPartials/footer.ejs') %>
+        <script src="//cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+        <script>
+            $(document).ready(function () {
+                $('.sepeturunsil').click(function (event) {
+
+
+                    let data = $(this).attr('href');
+                    console.log(data);
+                    $.ajax({
+                        method: 'POST',
+                        url: '/basket/removeitemfrombasket',
+                        data: { data: data },
+                        success: function (callback) {
+                            if (callback.status) {
+                                $(event.target).parents('.sepet').fadeOut();
+                                Swal.fire({
+                                    position: 'top-end',
+                                    icon: 'success',
+                                    title: 'Ürün Silindi.',
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                })
+                            } else {
+                                Swal.fire({
+                                    position: 'top-end',
+                                    icon: 'error',
+                                    title: 'Hata.!',
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                })
+                            }
+                        }
+                    })
+                    event.preventDefault();
+                })
+            })
+        </script>

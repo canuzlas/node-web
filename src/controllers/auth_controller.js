@@ -25,7 +25,9 @@ const loginCheckPageShow = async (req, res) => {
         if (req.body.checkcode == req.session.dogrulamaKodu) {
             delete req.session.dogrulamaKodu;
             delete req.session.mail;
-            res.redirect('/')
+            res.setHeader('Content-Type', 'text/html');
+            res.status(201);
+            res.redirect('/');
         } else {
             req.flash('auth_errors', [{ msg: 'Girdiğiniz kod hatalı.' }]);
             res.redirect('/check')
@@ -174,7 +176,7 @@ const verifyEmail = async (req, res) => {
         res.redirect('/login')
     }
 }
-const login = async (req, res, next) => {
+const login = async (req, res) => {
     const hatalar = validationResult(req);
     if (!hatalar.isEmpty()) {
         req.flash('auth_errors', hatalar.array())
@@ -182,10 +184,10 @@ const login = async (req, res, next) => {
     } else {
         req.session.mail = req.body.email;
         passport.authenticate('local', {
-            successRedirect: '/check',
+            successRedirect: '/',
             failureRedirect: '/login',
             failureFlash: true
-        })(req, res, next);
+        })(req, res);
 
     }
 }

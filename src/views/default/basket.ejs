@@ -1,47 +1,128 @@
 <%- include('../defaultPartials/headers.ejs') %>
-<section id="cart_items">
+	<section id="cart_items">
 
 		<div class="container">
-			<div class="table-responsive cart_info">
-				<table class="table table-condensed">
-					<thead>
-						<tr class="cart_menu">
-							<td class="image">Ürün</td>
-							<td class="description">Ürün Adı</td>
-							<td class="price">Fiyat</td>
-							<td class="quantity">Adet</td>
-							<td class="total">Toplam</td>
-							<td></td>
-						</tr>
-					</thead>
-					<tbody>
-						<% if (basketProducts != undefined) {%>
-							<% basketProducts.forEach(product => { %>
-								<tr>
-									<td class="cart_product">
-									<img width="50" height="50" src="/<%-product.products_foto%> " alt="">
-									</td>
-									<td class="cart_description">
-										<p><%-product.products_ad%></p>
-									</td>
-									<td class="cart_price">
-										<p><%-product.urun_fiyat%></p>
-									</td>
-									<td class="cart_quantity">
-										<b><p style="font-size: 20px !important"><%-product.urun_adet%></p></b>
-									</td>
-									<td class="cart_total">
-										<p class="cart_total_price"><%-product.urun_fiyat*product.urun_adet%> tl </p>
-									</td>
-									<td class="cart_delete">
-										<a class="cart_quantity_delete" href=""><i class="fa fa-times"></i></a>
-									</td>
-								</tr>
-							<% }) %>
-						<% } %>
-					</tbody>
-				</table>
+			<div class="row">
+				<div class="table-responsive cart_info col-md-8 col-sm-12 mt-3">
+					<table class="table table-condensed">
+						<thead>
+							<tr class="cart_menu">
+								<td class="image">Ürün</td>
+								<td class="description">Ürün Adı</td>
+								<td class="price">Fiyat</td>
+								<td class="quantity">Adet</td>
+								<td class="total">Toplam</td>
+								<td></td>
+							</tr>
+						</thead>
+						<tbody>
+							<% if (basketProducts !=undefined) {%>
+								<% for (let i=0; i <=basketProducts.length - 1; i++) { %>
+									<tr class="sepet">
+										<td class="cart_product">
+											<img width="50" height="50" src="/<%-basketProducts[i][0].products_foto%> "
+												alt="">
+										</td>
+										<td class="cart_description">
+											<p>
+												<%-basketProducts[i][0].products_ad%>
+											</p>
+										</td>
+										<td class="cart_price">
+											<p>
+												<%-basketProducts[i][0].urun_fiyat%>
+											</p>
+										</td>
+										<td class="cart_quantity">
+											<b>
+												<p style="font-size: 20px !important">
+													<%-basketProducts[i][0].urun_adet%>
+												</p>
+											</b>
+										</td>
+										<td class="cart_total">
+											<p class="cart_total_price">
+												<%-basketProducts[i][0].urun_fiyat*basketProducts[i][0].urun_adet%> tl
+											</p>
+										</td>
+										<td class="cart_delete">
+											<a class="cart_quantity_delete sepeturunsil"
+												href="<%-basketProducts[i][0].urun_id%>/<%-basketProducts[i][0].sepet_detay_id %>">X</a>
+										</td>
+									</tr>
+									<% } %>
+										<% } %>
+						</tbody>
+					</table>
+				</div>
+
+				<div style="margin-bottom: 50px;" class="col-md-4 mt-3">
+					<div class="card border-0 shadow text-center text-white bg-dark p-3">
+						<small>1. Adım</small>
+						<h3><b class="text-success">Sepetteki Ürünler</b></h3>
+						<div class="clearfix"></div>
+						<hr>
+						<small>2. Adım</small>
+						<h5><b>Adres Bilgileri</b></h5>
+						<div class="clearfix"></div>
+						<hr>
+						<small>3. Adım</small>
+						<h5><b>Ödeme Ekranı</b></h5>
+						<div class="clearfix"></div>
+						<hr>
+						<div class="my-2">
+							<p class="float-left">Sepetteki Ürün Sayısı :</p> <span class="float-right">(<%-basketProducts.length%>)</span>
+							<div class="clearfix"></div>
+							<hr>
+							<p class="float-left">Sepet Toplamı :</p> <span class="float-right"> <%-total%> TL</span>
+						</div>
+						<div align="center" class="mt-2">
+							<a  href="/basket/step1" class="btn btn-primary btn-lg">İleri</a>
+						</div>
+					</div>
+				</div>
+
+
+
 			</div>
 		</div>
-	</section> <!--/#cart_items-->
+	</section>
+	<!--/#cart_items-->
 	<%- include('../defaultPartials/footer.ejs') %>
+		<script src="//cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+		<script>
+			$(document).ready(function () {
+				$('.sepeturunsil').click(function (event) {
+
+
+					let data = $(this).attr('href');
+					console.log(data);
+					$.ajax({
+						method: 'POST',
+						url: '/basket/removeitemfrombasket',
+						data: { data: data },
+						success: function (callback) {
+							if (callback.status) {
+								$(event.target).parents('.sepet').fadeOut();
+								Swal.fire({
+									position: 'top-end',
+									icon: 'success',
+									title: 'Ürün Silindi.',
+									showConfirmButton: false,
+									timer: 1500
+								})
+							} else {
+								Swal.fire({
+									position: 'top-end',
+									icon: 'error',
+									title: 'Hata.!',
+									showConfirmButton: false,
+									timer: 1500
+								})
+							}
+						}
+					})
+					event.preventDefault();
+				})
+			})
+		</script>

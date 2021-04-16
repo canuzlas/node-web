@@ -35,7 +35,7 @@ module.exports = function (passport){
             cb(err, user);
         });
     });
-
+ 
 
 }
 
