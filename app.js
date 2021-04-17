@@ -15,24 +15,21 @@ const app = express();
 require('dotenv').config();
 require('./src/config/data_base');
 
-
-
-
 const mySessionStore = new mongoStrore({
     url: process.env.DataBase,
-    collection: 'sessions'
+    collection: 'sessions',
+    ttl: 24 * 60 * 60
 })
 
 app.use(session({
     secret: process.env.SessionSecret,
     resave: false,
     saveUninitialized: true,
-    cookie: {
+    cookie:{
         maxAge: 1000 * 60 * 60
     },
-    store: mySessionStore
+    store: mySessionStore,
 }))
-
 
 app.use(flash());
 app.use((req, res, next) => {

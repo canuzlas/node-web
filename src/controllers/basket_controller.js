@@ -160,8 +160,18 @@ const showBasketStep1Page = async (req, res, next) => {
             return setting.headerSettingLink
         }
     })
+    const sql = 'SELECT * FROM sepet WHERE sepet_sahip_id=?';
+    const value = [[String(req.user._id)]];
+    const sepetsonuc = await query(sql, [value])
+    const sql1 = 'SELECT * FROM sepet_detay WHERE sepet_detay.sepet_id=?';
+    const value1 = [[sepetsonuc[0].sepet_id]];
+    const sepetdetaysonuc = await query(sql1, [value1])
 
-    return res.render("default/basket-step1.ejs", { layout: "defaultLayout/default_layout.ejs", uye: req.user, settings: settings, logo: logo })
+    if (sepetdetaysonuc.length) {
+        return res.render("default/basket-step1.ejs", { layout: "defaultLayout/default_layout.ejs", uye: req.user, settings: settings, logo: logo })
+    } else {
+        return res.redirect('/')
+    }
 }
 const payPage = async (req, res, next) => {
     const hatalar = validationResult(req);
@@ -202,7 +212,7 @@ const payPage = async (req, res, next) => {
                         obj.name = resdata[i][0].products_ad;
                         obj.category1 = 'uzlasyazilim';
                         obj.itemType = Iyzipay.BASKET_ITEM_TYPE.VIRTUAL
-                        obj.price = resdata[i][0].urun_fiyat*resdata[i][0].urun_adet;
+                        obj.price = resdata[i][0].urun_fiyat * resdata[i][0].urun_adet;
                         basketItemsArray.push(obj)
                     }
                     return new Promise((resolve, reject) => {
@@ -211,7 +221,6 @@ const payPage = async (req, res, next) => {
                 }
 
                 const data = await basketItemsArray();
-                console.log(data);
                 var iyzipay = new Iyzipay({
                     apiKey: "sandbox-j1Ym48XjB6KXhMPxVoiWJ8U2vHKFol7J",
                     secretKey: "sandbox-z1ygeYjmp3jo7Hh8T0V8AZ8O21SXfsDw",
@@ -221,12 +230,12 @@ const payPage = async (req, res, next) => {
                 var request = {
                     locale: Iyzipay.LOCALE.TR,
                     conversationId: String(req.user._id),
-                    price:String(totalprice) ,
+                    price: String(totalprice),
                     paidPrice: String(totalprice),
                     currency: Iyzipay.CURRENCY.TRY,
                     basketId: String(sepetsonuc[0].sepet_id),
                     paymentGroup: Iyzipay.PAYMENT_GROUP.LISTING,
-                    callbackUrl: 'http://127.0.0.1:3000/basket/paycallback',
+                    callbackUrl: 'http://localhost:3000/basket/paycallback',
                     enabledInstallments: [2, 3, 6, 9],
                     buyer: {
                         id: String(req.user._id),
@@ -252,11 +261,10 @@ const payPage = async (req, res, next) => {
                         country: String(req.body.siparisUlke),
                         address: String(req.body.siparisAdres),
                     },
-                    basketItems:data
-                     
-                
-                };
+                    basketItems: data
 
+
+                };
                 iyzipay.checkoutFormInitialize.create(request, function (err, result) {
 
                     res.send(result.checkoutFormContent + '<div id="iyzipay-checkout-form" class="responsive"></div>');
@@ -268,10 +276,44 @@ const payPage = async (req, res, next) => {
         }
     }
 }
+const paycallback = async (req, res, next) => {
 
-const paycallback = (req, res, next) => {
+    const settings = await HeaderSettings.find();
+    const logo = await settings.filter(setting => {
+        if (setting.headerSettingAd == "logo") {
+            return setting.headerSettingLink
+        }
+    })
 
+    var iyzipay = new Iyzipay({
+        apiKey: "sandbox-j1Ym48XjB6KXhMPxVoiWJ8U2vHKFol7J",
+        secretKey: "sandbox-z1ygeYjmp3jo7Hh8T0V8AZ8O21SXfsDw",
+        uri: 'https://sandbox-api.iyzipay.com'
+    });
+    iyzipay.checkoutForm.retrieve({
+        locale: Iyzipay.LOCALE.TR,
+        token: String(req.body.token)
+    }, async function (err, result) {
+        if (result.status == 'failure') {
+            let uye = true;
+            let sonuc = { msg: result.errorMessage + ' lütfen kart bilgilerinizi kontrol edin.' };
+            return res.render("default/callbacksonucPage.ejs", { layout: "defaultLayout/default_layout.ejs", settings: settings, logo: logo, uye: uye, sonuc: sonuc })
+        } else if (result.status == 'success') {
+            let sql = "INSERT INTO siparis (siparis_no,siparis_toplam) VALUES (" + result.basketId + ',' + result.paidPrice + ')';
+            let sonuc = await query(sql);
+            if (sonuc.affectedRows >= 1) {
+                let allsonuc = [];
+                for (let i = 0; i <= parseInt(result.itemTransactions.length) - 1; i++) {
+                    let sql = "INSERT INTO siparis_detay (siparis_id,urun_id) VALUES (" + sonuc.insertId + ',' + result.itemTransactions[i].itemId + ')';
+                    let sonuc = await query(sql);
+                    allsonuc.push(sonuc)
+                }
+                console.log(allsonuc);
+            }
+        }
+    });
 }
+
 
 module.exports = {
     addProductToBasket,
@@ -279,5 +321,5 @@ module.exports = {
     removeİtemFromBasket,
     showBasketStep1Page,
     payPage,
-    paycallback
+    paycallback,
 }

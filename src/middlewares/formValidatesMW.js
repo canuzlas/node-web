@@ -77,6 +77,7 @@ const payformValidate = () => {
             .isEmail().withMessage('Lütfen geçerli bir mail türü girin.'),
         body('siparisGsm')
             .trim()
+            .isNumeric().withMessage('Telefon numaranızı düzgün giriniz')
             .isLength({ min: 13, max: 20 }).withMessage('Telefon numaranız +90 la başlamalı.'),
         body('siparisAdres')
             .trim()
@@ -89,7 +90,7 @@ const payformValidate = () => {
             .isLength({ min: 3, max: 50 }).withMessage('Sipariş ülkesi en az 3 karakter olmalı en fazla 15.'),
         body('siparisTC')
             .trim()
-            .isNumeric()
+            .isNumeric().withMessage('TCK no hata.!')
             .isLength({ min: 11, max: 50 }).withMessage('TCK no en az 11 hane olmalı.')
     ]
 }

@@ -16,7 +16,7 @@ const showLoginPage = async(req, res) => {
             return setting.headerSettingLink
         }
     })
-    res.render('userLoginRegister/login', { layout: 'defaultLayout/default_layout.ejs',uye:req.user, settings:settings,logo:logo })
+    res.render('userLoginRegister/login', { layout: 'defaultLayout/default_layout.ejs',uye:undefined, settings:settings,logo:logo })
 }
 const loginCheckPageShow = async (req, res) => {
 
@@ -25,8 +25,6 @@ const loginCheckPageShow = async (req, res) => {
         if (req.body.checkcode == req.session.dogrulamaKodu) {
             delete req.session.dogrulamaKodu;
             delete req.session.mail;
-            res.setHeader('Content-Type', 'text/html');
-            res.status(201);
             res.redirect('/');
         } else {
             req.flash('auth_errors', [{ msg: 'Girdiğiniz kod hatalı.' }]);
@@ -85,7 +83,6 @@ const loginCheckPageShow = async (req, res) => {
 
 
 }
-
 const showForgotPage = (req, res) => {
     res.render('userLoginRegister/forgot', { layout: 'layout/auth_layout.ejs' })
 }

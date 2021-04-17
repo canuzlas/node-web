@@ -3,6 +3,11 @@
 
 		<div class="container">
 			<div class="row">
+				<% if (locals.auth_errors != undefined || locals.auth_success != undefined) { %>
+					<%- include('../partials/_validateErrorMsg') %> 
+				 <% } %>
+
+				<% if (basketProducts !=undefined) { %>
 				<div class="table-responsive cart_info col-md-8 col-sm-12 mt-3">
 					<table class="table table-condensed">
 						<thead>
@@ -71,18 +76,34 @@
 						<div class="clearfix"></div>
 						<hr>
 						<div class="my-2">
-							<p class="float-left">Sepetteki Ürün Sayısı :</p> <span class="float-right">(<%-basketProducts.length%>)</span>
+							<p class="float-left">Sepetteki Ürün Sayısı :</p> <span class="float-right">
+								<% if (basketProducts !=undefined) { %>
+									(<%-basketProducts.length%>)
+								<% }else{ %>
+									0
+								<% } %> 
+							</span>
 							<div class="clearfix"></div>
 							<hr>
-							<p class="float-left">Sepet Toplamı :</p> <span class="float-right"> <%-total%> TL</span>
+							<p class="float-left">Sepet Toplamı :</p> <span class="float-right">
+								<% if (basketProducts !=undefined) { %>
+									<%-total%>
+								<% }else{ %>
+									0
+								<% } %>TL</span>
 						</div>
 						<div align="center" class="mt-2">
 							<a  href="/basket/step1" class="btn btn-primary btn-lg">İleri</a>
 						</div>
 					</div>
 				</div>
-
-
+				<% }else{ %> 
+					<div align="center" class="col-md-12">
+						<div style="display: block !important; margin-top: 50px !important; margin-bottom: 50px;" class="alert alert-primary" role="alert">
+							Sepetinizde Hİç Ürün Bulunamadı Alışverişe Hemen Başlamak İçin <a href="/shop">Buraya Tıkla .!</a>
+						  </div>
+					</div>
+				<% } %> 
 
 			</div>
 		</div>

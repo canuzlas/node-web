@@ -8,8 +8,10 @@ route.get('/step1', userCheckMw.userCheck, userController.showBasketStep1Page)
 
 route.post('/', userCheckMw.userCheck, userController.addProductToBasket)
 route.post('/removeitemfrombasket', userCheckMw.userCheck, userController.removeİtemFromBasket)
+
+
 route.post('/paypage', userCheckMw.userCheck, formValidateMw.payformValidate(), userController.payPage)
-route.post('/paycallback', userCheckMw.userCheck, userController.paycallback)
+route.post('/paycallback', userController.paycallback)
 
 
 module.exports = route

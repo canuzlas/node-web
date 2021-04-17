@@ -1,0 +1,19 @@
+<%- include('../defaultPartials/headers.ejs') %>
+	<section id="cart_items">
+
+		<div class="container">
+			<div class="row">
+				<% if (sonuc !=undefined) { %>
+					<div style="background-color: red;" align="center" class="col-md-12">
+						<div style="display: block !important; margin-top: 50px !important; margin-bottom: 50px; color: white;"
+							class="alert alert-primary" role="alert">
+							<b><%-sonuc.msg%></b>
+						</div>
+					</div>
+					<% } %>
+			</div>
+		</div>
+
+	</section>
+	<!--/#cart_items-->
+	<%- include('../defaultPartials/footer.ejs') %>
