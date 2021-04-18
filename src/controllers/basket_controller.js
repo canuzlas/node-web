@@ -2,6 +2,7 @@ const { validationResult } = require('express-validator');
 const Iyzipay = require('iyzipay');
 const ProductModel = require('../models/product_model');
 const HeaderSettings = require('../models/header_model');
+const IyzicoModel = require('../models/iyziconunaq');
 const mysql = require('../config/mysql_database');
 const util = require('util');
 const { setTimeout } = require('timers');
@@ -265,13 +266,23 @@ const payPage = async (req, res, next) => {
 
 
                 };
-                iyzipay.checkoutFormInitialize.create(request, function (err, result) {
+                iyzipay.checkoutFormInitialize.create(request, async function (err, result) {
 
-                    res.send(result.checkoutFormContent + '<div id="iyzipay-checkout-form" class="responsive"></div>');
+                    if (result.status == 'success') {
+                        const iyzicouser = await new IyzicoModel({ conversationId: result.conversationId, token: result.token })
+                        iyzicouser.save();
+                        return res.send(result.checkoutFormContent + '<div id="iyzipay-checkout-form" class="responsive"></div>');
+                    } else {
+                        const settings = await HeaderSettings.find();
+                        const logo = await settings.filter(setting => {
+                            if (setting.headerSettingAd == "logo") {
+                                return setting.headerSettingLink
+                            }
+                        })
+                        let sonuc = { msg: 'Ödeme Sisteminde Hata Oluştu Lütfen Destek Talep Edin.' };
+                        return res.render("default/callbacksonucPage.ejs", { layout: "defaultLayout/default_layout.ejs", settings: settings, logo: logo, uye: req.user, sonuc: sonuc })
+                    }
                 });
-
-
-
             }
         }
     }
@@ -295,25 +306,85 @@ const paycallback = async (req, res, next) => {
         token: String(req.body.token)
     }, async function (err, result) {
         if (result.status == 'failure') {
+            const user = await IyzicoModel.find({ token: result.token });
+            req.session.passport = { user: user[0].conversationId };
+            await IyzicoModel.findByIdAndDelete(user[0]._id);
             let uye = true;
             let sonuc = { msg: result.errorMessage + ' lütfen kart bilgilerinizi kontrol edin.' };
             return res.render("default/callbacksonucPage.ejs", { layout: "defaultLayout/default_layout.ejs", settings: settings, logo: logo, uye: uye, sonuc: sonuc })
         } else if (result.status == 'success') {
-            let sql = "INSERT INTO siparis (siparis_no,siparis_toplam) VALUES (" + result.basketId + ',' + result.paidPrice + ')';
+            const user = await IyzicoModel.find({ token: result.token });
+            req.session.passport = { user: user[0].conversationId };
+            await IyzicoModel.findByIdAndDelete(user[0]._id);
+
+            let sql = "INSERT INTO siparis (siparis_sahip_id,siparis_no,siparis_toplam) VALUES ('" + req.session.passport.user + "'," + result.basketId + ',' + result.paidPrice + ')';
             let sonuc = await query(sql);
             if (sonuc.affectedRows >= 1) {
-                let allsonuc = [];
-                for (let i = 0; i <= parseInt(result.itemTransactions.length) - 1; i++) {
-                    let sql = "INSERT INTO siparis_detay (siparis_id,urun_id) VALUES (" + sonuc.insertId + ',' + result.itemTransactions[i].itemId + ')';
-                    let sonuc = await query(sql);
-                    allsonuc.push(sonuc)
+                let insertId = sonuc.insertId;
+                const getcountArray = async () => {
+                    let sonucArray = [];
+                    for (let i = 0; i <= parseInt(result.itemTransactions.length) - 1; i++) {
+                        let sql = "INSERT INTO siparis_detay (siparis_id,urun_id) VALUES ('" + insertId + "','" + result.itemTransactions[i].itemId + "')";
+                        let sonuc = await query(sql);
+                        sonucArray.push(sonuc);
+                    }
+                    return new Promise((resolve, reject) => {
+                        setTimeout(resolve(sonucArray), 0.5);
+                    })
                 }
-                console.log(allsonuc);
+                let count = await getcountArray();
+                if (count.length == result.itemTransactions.length) {
+                    const sqldeletebasket = "DELETE sepet, sepet_detay FROM sepet INNER JOIN sepet_detay ON sepet.sepet_id = sepet_detay.sepet_id WHERE sepet.sepet_id=" + result.basketId;
+                    let sonucdeletefrombasket = await query(sqldeletebasket);
+
+                    if (sonucdeletefrombasket.affectedRows >= 1) {
+                        req.flash('auth_success', [{ msg: 'Ödeme Başarılı. Siparişlerinizi Alt Taraftan Kontrol Edebilirsiniz.' }]);
+                        return res.redirect('/basket/siparislerim')
+                    }
+                }
+
+
             }
         }
     });
 }
+const showSiparislerimPage = async (req, res, next) => {
+    const settings = await HeaderSettings.find();
+    const logo = await settings.filter(setting => {
+        if (setting.headerSettingAd == "logo") {
+            return setting.headerSettingLink
+        }
+    })
+    let gettAllSiparis = "SELECT * FROM siparis WHERE siparis_sahip_id="+"'"+req.user._id+"'";
+    let siparisler = await query(gettAllSiparis);
+    if(siparisler.length){
+        return res.render("default/siparislerim.ejs", { layout: "defaultLayout/default_layout.ejs", settings: settings, logo: logo, uye: req.user, siparisler: siparisler })
+    }else{
+        return res.render("default/siparislerim.ejs", { layout: "defaultLayout/default_layout.ejs", settings: settings, logo: logo, uye: req.user, siparisler: undefined })
+    }
 
+}
+const siparisDetay = async (req, res, next) => {
+    const settings = await HeaderSettings.find();
+    const logo = await settings.filter(setting => {
+        if (setting.headerSettingAd == "logo") {
+            return setting.headerSettingLink
+        }
+    })
+
+    const sql = "SELECT * FROM siparis WHERE siparis_id="+req.params.siparisid+" and siparis_sahip_id='"+req.user._id+"'";
+    const sonuc = await query(sql);
+
+    if(sonuc.length){
+        let getAllSiparisSql = 'SELECT products.products_ad,products.products_foto,products.products_fiyat FROM siparis INNER JOIN siparis_detay ON siparis.siparis_id=siparis_detay.siparis_id INNER JOIN products ON siparis_detay.urun_id=products.products_id WHERE siparis.siparis_id='+'"'+req.params.siparisid+'"';
+        const siparissonuc = await query(getAllSiparisSql);
+        if(siparissonuc.length){
+            return res.render("default/siparisdetay.ejs", { layout: "defaultLayout/default_layout.ejs", settings: settings, logo: logo, uye: req.user, siparisdetay: siparissonuc })
+        }
+    }else{
+         return res.render("default/siparisdetay.ejs", { layout: "defaultLayout/default_layout.ejs", settings: settings, logo: logo, uye: req.user, siparisdetay: undefined })
+    }
+}
 
 module.exports = {
     addProductToBasket,
@@ -322,4 +393,6 @@ module.exports = {
     showBasketStep1Page,
     payPage,
     paycallback,
+    showSiparislerimPage,
+    siparisDetay
 }

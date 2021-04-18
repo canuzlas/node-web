@@ -1,0 +1,50 @@
+<%- include('../defaultPartials/headers.ejs') %>
+	<section id="cart_items">
+
+		<div class="container">
+			<div class="row">
+				<% if (locals.auth_success != undefined) { %>
+					<%- include('../partials/_validateErrorMsg') %> 
+				 <% } %>
+
+				<% if (siparisler !=undefined) { %>
+				<div class="table-responsive cart_info col-md-12 col-sm-12 mt-3">
+					<table class="table table-condensed">
+						<thead>
+							<tr class="cart_menu">
+								<td class="image">Sipariş No #</td>
+								<td class="description">Sipariş Toplamı</td>
+								<td class="price">İşlemler</td>
+							</tr>
+						</thead>
+						<tbody>
+								<% for (let i=0; i <=siparisler.length - 1; i++) { %>
+									<tr class="sepet">
+										<td class="cart_product">
+                                                <p><%-siparisler[i].siparis_no%></p>
+										</td>
+										<td class="cart_description">
+											<p><%-siparisler[i].siparis_toplam%> tl</p>
+										</td>
+										<td class="cart_price">
+											<a class="btn btn-success siparisdetaybuton" href="/basket/siparisdetaydata/<%-siparisler[i].siparis_id%>">Sipariş Detayını Gör</a>
+										</td>
+									</tr>
+									<% } %>
+						</tbody>
+					</table>
+				</div>
+
+				<% }else{ %> 
+					<div align="center" class="col-md-12">
+						<div style="display: block !important; margin-top: 50px !important; margin-bottom: 50px;" class="alert alert-primary" role="alert">
+							Siparişiniz Bulunmadı.! Alışverişe Hemen Başlamak İçin <a href="/shop">Buraya Tıkla .!</a>
+						  </div>
+					</div>
+				<% } %> 
+
+			</div>
+		</div>
+	</section>
+	<!--/#cart_items-->
+	<%- include('../defaultPartials/footer.ejs') %>
